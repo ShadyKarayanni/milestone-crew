@@ -7,6 +7,8 @@ a lean **lead** that runs a small crew:
 - An independent, **harsh QA** agent judges every milestone.
 - Fixes go back to the builder that owns the files, then QA runs **once** more.
 - It **stops after every milestone** and waits for your OK.
+- Before any of that, a **kickoff** (Step 0) agrees the milestones with you,
+  each with a "Done when" checklist, and writes the brief to `PLAN.md`.
 
 Small tasks are just done directly. Crew mode only kicks in when the work is
 big enough to need it.
@@ -31,7 +33,11 @@ Start a new session. That's it: the core rules are loaded automatically.
  big task? ---- no ---> just do it
       | yes
       v
- lead loads skill: SKILL.md + one matching preset
+ Step 0: kickoff  (/milestone-crew:kickoff)
+      |   read-only repo scan -> short interview (or map your brief)
+      |   -> milestones with "Done when" -> PLAN.md -> you approve
+      v
+ lead loads skill: SKILL.md + the preset the brief names
       |
       v
  +-------------------- per milestone ---------------------+
@@ -48,12 +54,31 @@ Start a new session. That's it: the core rules are loaded automatically.
  |                    |<------ re-QA once ----+           |
  |                    v                                   |
  |        commit + plain report  -->  STOP, wait for OK   |
+ |   (done = every "Done when" met AND QA passed,         |
+ |    otherwise "not done" + the open items)              |
  +--------------------------------------------------------+
 ```
 
 The short core stays in every session so the main agent always knows the key
 rules, without bloating the context. The long playbook, brief templates and
 presets are only read when crew mode actually starts.
+
+## Kickoff
+
+Start a big job with:
+
+```
+/milestone-crew:kickoff Redesign the pricing page. It feels generic and
+nobody reads the plans table. Keep the copy and the checkout flow.
+```
+
+The lead has a subagent scan the repo (read-only), then asks a few short
+rounds of multiple-choice questions, skipping anything the code already
+answers. It proposes milestones (milestone 1 is always a written plan, no
+code), each with a scope, a "Done when" checklist, a QA method and a commit
+message, writes the brief to `PLAN.md`, shows you a short summary and waits
+for your yes. Already wrote a brief? Paste it after the command: the lead maps
+it onto the 10-section template and asks only about what is missing.
 
 ## File map
 
@@ -66,18 +91,22 @@ hooks/
   session-start.sh       prints core/CORE.md (POSIX sh, no dependencies)
 core/
   CORE.md                the injected core rules (keep <= 50 lines)
+skills/kickoff/
+  SKILL.md               Step 0: agree milestones, write the brief, get approval
+  references/
+    brief-template.md    the 10-section brief, with a "gap if" test per section
 skills/milestone-crew/
   SKILL.md               full playbook + preset index
   references/
     briefs.md            builder, QA, fix-round and relaunch templates
-    state-file.md        PLAN.md template
+    state-file.md        PLAN.md template (brief + milestones + Done when)
   scripts/
     browser.mjs          headless Chrome helper for QA (shot, fps, console)
   presets/
     web-design.md        websites and redesigns
     3d-webgl.md          three.js / React Three Fiber scenes
     backend-api.md       APIs and services
-    _TEMPLATE.md         starting point for a new preset
+    _TEMPLATE.md         starting point for a new preset (Done when per milestone)
 scripts/check.sh         validates the plugin (run before every commit)
 .github/workflows/       runs check.sh on push and PR
 ```

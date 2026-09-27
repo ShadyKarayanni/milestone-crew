@@ -2,7 +2,10 @@
 
 For APIs, services, data models and background jobs.
 
-## Milestone plan
+## Default milestone plan
+
+Defaults the kickoff proposes, not a fixed plan. The kickoff fits them to
+the project, adds a "Done when" checklist to each, and the user approves.
 
 1. **Design doc** (no code): endpoints or interfaces, data model changes,
    error cases, migration plan, test plan. In the state file.

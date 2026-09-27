@@ -2,13 +2,22 @@
 
 <One line: what kind of work this preset is for.>
 
-## Milestone plan
+## Default milestone plan
+
+Defaults the kickoff proposes, not a fixed plan. The kickoff fits them to
+the project and the user approves. Every "Done when" item must be observable:
+something a QA agent can check and mark met or not met.
 
 1. **Direction / plan** (no code, written in the state file).
-2. <milestone>
-3. <milestone>
-4. <milestone>
-5. <polish / performance / cleanup>
+   Done when: <the direction covers X, Y, Z; the user has approved it>.
+2. **<milestone>**: <scope>.
+   Done when: <observable criterion>; <criterion>.
+3. **<milestone>**: <scope>.
+   Done when: <observable criterion>; <criterion>.
+4. **<milestone>**: <scope>.
+   Done when: <observable criterion>; <criterion>.
+5. **<polish / performance / cleanup>**: <scope>.
+   Done when: <budgets met, checks pass, final QA passes>.
 
 ## How QA verifies
 

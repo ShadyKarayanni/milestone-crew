@@ -3,8 +3,9 @@ name: milestone-crew
 description: >
   Full playbook for running a multi-part task as a crew: a lean lead agent
   orchestrates, parallel builder subagents own disjoint files, an independent
-  harsh QA subagent judges each milestone, fixes go back to the owning builder,
-  and work stops after every milestone for the user's OK. Includes brief
+  harsh QA subagent judges each milestone against its "Done when" checklist,
+  fixes go back to the owning builder, and work stops after every milestone
+  for the user's OK. Starts with a kickoff (Step 0). Includes brief
   templates, a state-file template and presets (web design, 3D/WebGL, backend
   API). Use when a task spans several files or areas, when the user says
   "crew mode", "milestone crew", "use builders and QA", or when starting a
@@ -20,16 +21,25 @@ source assets and check quality. Your context is the scarce resource: guard it.
 ## 0. Before anything
 
 1. Say in one line what you are about to do.
-2. Run `git status`. If the user has uncommitted work, ask to commit it, then
-   create a branch for this job. Never stash, reset or force.
-3. Pick a preset from the index below and load only that file.
-4. Create the state file from `references/state-file.md` at the repo root
-   (default name `PLAN.md`; reuse an existing plan file if the repo has one).
+2. **Step 0, kickoff.** If `PLAN.md` has no approved brief yet, run the
+   `kickoff` skill (`/milestone-crew:kickoff`) first. It defines the milestones
+   with the user, each with a "Done when" checklist, and writes the brief into
+   the state file. If the user already wrote a full brief, the kickoff maps it
+   onto its template and asks only about the gaps. No work starts until the
+   user approves the brief.
+3. Run `git status`. If the user has uncommitted work, ask to commit it
+   (leave `PLAN.md` out of that commit), then create a branch for this job.
+   Never stash, reset or force.
+4. Load only the preset the brief names (see the index below).
+5. The state file is `PLAN.md` at the repo root, from `references/state-file.md`
+   (reuse an existing plan file if the repo has one).
 
 ## Preset index
 
-Load only the preset that matches. If none matches, work from this playbook
-alone and offer to write a new preset from `presets/_TEMPLATE.md` afterwards.
+Load only the preset that matches. A preset's milestone plan is a set of
+defaults that the kickoff proposes; the user's approved brief decides. If none
+matches, work from this playbook alone and offer to write a new preset from
+`presets/_TEMPLATE.md` afterwards.
 
 | Preset | Use for | File |
 |---|---|---|
@@ -41,27 +51,46 @@ alone and offer to write a new preset from `presets/_TEMPLATE.md` afterwards.
 
 For every milestone:
 
-1. **Plan**: write the milestone's goal and done-criteria in the state file.
-   Milestone 1 is always a written direction or plan. No code.
+1. **Plan**: confirm the milestone's scope and "Done when" checklist in the
+   state file (the kickoff wrote them). Milestone 1 is always a written
+   direction or plan. No code.
 2. **Split**: divide the work along FILE boundaries, not topics. Each builder
    gets a list of files it owns. Shared files (a router, an index, a scene
    root) get one named builder, or minimal edits only (e.g. one mount line).
 3. **Build**: launch builders in parallel with `references/briefs.md` (builder
    template). Every brief is self-contained.
 4. **QA**: launch one fresh, independent QA subagent (QA template). Give it the
-   state file and the failures from the last round. It must be harsh.
+   state file, the milestone's "Done when" items and the failures from the
+   last round. It marks each item met or not met. It must be harsh.
 5. **Calibrate**: optionally glance at 1 or 2 QA screenshots yourself. Cheap,
    and it keeps your fix briefs honest.
 6. **Fix**: route each fix to the builder that owns the file, by resuming it
    with SendMessage (it keeps its context). Use the fix-round template.
-7. **Re-QA once**. Then stop, even if small items remain. List them.
-8. **Commit** the milestone. Update the milestone table in the state file.
+7. **Re-QA once**. Then stop, even if items remain open.
+8. **Commit** the milestone. Update the milestone table in the state file
+   (Done when count, QA result, status, commit).
 9. **STOP and report** in plain language:
+   - done or NOT DONE (see the completion rule below)
    - what changed
    - what to look at (URL, command, screen)
    - what was verified, and how
-   - what was NOT verified
+   - what was NOT verified, and which "Done when" items are open
    Then wait for the user's OK before the next milestone.
+
+### Completion rule
+
+- A milestone is **done** only when every "Done when" item is met AND QA
+  passed. Never round up.
+- Otherwise report it as **not done** and list exactly which items are open.
+- Only the user can move open items to a later milestone, and only by saying
+  so. Record each under "Parked" in the state file, with its target milestone.
+
+### Approved outputs stay approved
+
+Once the user approves a milestone's output (a camera shot, a layout, an API
+shape), record it under "Approved outputs" in the state file. A later QA or
+builder suggestion that would change it goes to the user as a question, never
+straight to a builder.
 
 ## 2. Keeping the lead lean
 
@@ -141,6 +170,8 @@ numbers worthless. So every browser run goes through `scripts/browser.mjs`
 
 ## References
 
+- The `kickoff` skill (`/milestone-crew:kickoff`) and its
+  `references/brief-template.md`: Step 0, the 10-section brief.
 - `references/briefs.md`: builder, QA, fix round and relaunch templates.
-- `references/state-file.md`: the state-file template.
+- `references/state-file.md`: the state-file template (brief + milestones).
 - `presets/*.md`: see the index above.

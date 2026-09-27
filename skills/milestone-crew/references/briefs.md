@@ -50,9 +50,9 @@ You did not build this. Your job is to find what is wrong, not to be kind.
 Read first: <repo>/PLAN.md (target, decisions, gotchas).
 Last round's failures to re-check: <list, or "first round">.
 
-Check these items / shots:
-1. <item or shot: URL + what should be true>
-2. ...
+"Done when" items to mark met / not met (from PLAN.md, milestone <N>):
+<Na>. <item: URL, command or shot + what must be true>
+<Nb>. ...
 
 How to verify: <from the preset: commands, viewports, tests>.
 Browser: use only the helper script, never hand-rolled Chrome commands:
@@ -69,8 +69,8 @@ If something looks wrong, first rule out your own setup (viewport, scale,
 stale build, wrong URL) before failing it.
 
 Reply in 150 words or fewer. No pasted code. Format:
-VERDICT: PASS or FAIL
-- <item>: ok / problem in one line
+VERDICT: PASS (every item met) or FAIL
+- <Na>: met / NOT MET, problem in one line
 TOP FIXES (ranked):
 1. <fix> [this milestone | later milestone] (owner file: <path>)
 ARTIFACTS: <paths>

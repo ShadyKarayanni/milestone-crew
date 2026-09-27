@@ -3,7 +3,10 @@
 For three.js / React Three Fiber (R3F) scenes. Combine with `web-design.md`
 when the scene lives inside a website.
 
-## Milestone plan
+## Default milestone plan
+
+Defaults the kickoff proposes, not a fixed plan. The kickoff fits them to
+the project, adds a "Done when" checklist to each, and the user approves.
 
 1. **Direction doc** (no code): mood, references, camera shot list with
    look-at points, asset list with sources and licenses, MB and FPS targets (see Targets).

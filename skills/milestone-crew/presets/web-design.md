@@ -2,7 +2,10 @@
 
 For website design and redesigns: landing pages, marketing sites, visual polish.
 
-## Milestone plan
+## Default milestone plan
+
+Defaults the kickoff proposes, not a fixed plan. The kickoff fits them to
+the project, adds a "Done when" checklist to each, and the user approves.
 
 1. **Direction doc** (no code): mood, references, type, color, layout per
    section, motion ideas, what "cheap" would look like and how to avoid it.
