@@ -1,0 +1,13 @@
+{
+  "name": "milestone-crew",
+  "version": "1.0.0",
+  "description": "Lead + parallel builders + harsh independent QA, one milestone at a time, stopping for your OK after each.",
+  "author": {
+    "name": "Shady Karayanni",
+    "url": "https://github.com/ShadyKarayanni"
+  },
+  "homepage": "https://github.com/ShadyKarayanni/milestone-crew",
+  "repository": "https://github.com/ShadyKarayanni/milestone-crew",
+  "license": "MIT",
+  "keywords": ["subagents", "orchestration", "qa", "milestones", "workflow"]
+}

@@ -1,0 +1,17 @@
+{
+  "$schema": "https://anthropic.com/claude-code/marketplace.schema.json",
+  "name": "milestone-crew",
+  "description": "A lean lead, parallel builders and a harsh QA agent, working milestone by milestone.",
+  "owner": {
+    "name": "Shady Karayanni",
+    "url": "https://github.com/ShadyKarayanni"
+  },
+  "plugins": [
+    {
+      "name": "milestone-crew",
+      "description": "Lead orchestrates, builders own disjoint files, independent QA judges every milestone, and it stops for your OK.",
+      "source": "./",
+      "category": "productivity"
+    }
+  ]
+}
