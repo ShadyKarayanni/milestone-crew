@@ -56,27 +56,44 @@ For every milestone:
 1. **Plan**: confirm the milestone's scope and "Done when" checklist in the
    state file (the kickoff wrote them). Milestone 1 is always a written
    direction or plan. No code.
+   - The "Done when" list must cover every spec point the user cares about.
+     Anything left out, QA reports as an extra, or a feature can pass while
+     nobody can see it.
+   - If the milestone touches a number (FPS, load time, size), measure a
+     baseline now. Once builders edit and hot-reload, a clean baseline is gone.
 2. **Split**: divide the work along FILE boundaries, not topics. Each builder
    gets a list of files it owns. Shared files (a router, an index, a scene
    root) get one named builder, or minimal edits only (e.g. one mount line).
+   If two builders must touch one file, give each an exact region (a function,
+   a block) plus the re-read-before-edit rule.
 3. **Build**: launch builders in parallel with `references/briefs.md` (builder
-   template). Every brief is self-contained.
+   template). Every brief is self-contained. Prefer a fresh builder per round
+   or big change: long, taste-driven rounds fill a builder's context.
 4. **QA**: launch one fresh, independent QA subagent (QA template). Give it the
-   state file, the milestone's "Done when" items and the failures from the
-   last round. It marks each item met or not met. It must be harsh.
+   state file, the milestone's "Done when" items, the failures from the
+   last round and every builder claim to verify (section 5). It marks each
+   item met or not met. It must be harsh.
 5. **Calibrate**: optionally glance at 1 or 2 QA screenshots yourself. Cheap,
    and it keeps your fix briefs honest.
-6. **Fix**: route each fix to the builder that owns the file, by resuming it
-   with SendMessage (it keeps its context). Use the fix-round template.
+6. **Fix**: route each fix to the builder that owns the file. Small fixes:
+   resume it with SendMessage (fix-round template). A long or taste-driven
+   round: a fresh builder with a full brief. After messaging a builder, check
+   the diff to confirm the change landed before you call it done.
 7. **Re-QA once**. Then stop, even if items remain open.
-8. **Commit** the milestone. Update the milestone table in the state file
-   (Done when count, QA result, status, commit).
+8. **Commit** (with the user's OK) at the end of every accepted round, and
+   always before relaunching a builder on files with uncommitted work: a later
+   builder that rewrites a file can wipe it. Never stash, reset or checkout.
+   Update the milestone table in the state file (Done when count, QA result,
+   status, commit).
 9. **STOP and report** in plain language:
    - done or NOT DONE (see the completion rule below)
-   - what changed
-   - what to look at (URL, command, screen)
+   - what changed, in plain words
+   - "What to look at": a list of URL or command, plus what to check there
    - what was verified, and how
    - what was NOT verified, and which "Done when" items are open
+   No menus of numbered options to pick from; ask only the real open
+   questions. If the user may be away from the terminal, send the key
+   screenshots to them directly, not only their paths.
    Then wait for the user's OK before the next milestone.
 
 ### Completion rule
@@ -111,6 +128,15 @@ numbered gotchas list. Subagents read it first and append new gotchas (one line
 each, numbered). It survives interruptions and context resets. Template:
 `references/state-file.md`.
 
+- Big reference assets (a large model, a long document, a design file): one
+  helper analyses each once and writes a short summary file next to it
+  (contents, sizes, licence, best parts, what to avoid). The state file points
+  to the summary, so later agents read that, not the asset.
+- Compute the budget table from the files on disk, not from memory. When
+  nothing loads an asset any more, ask the user and delete it.
+- Budgets and limits in the state file are the user's. Only the user changes
+  one; record the change and tell every running builder.
+
 ## 4. File ownership rules (put these in every builder brief)
 
 - You own exactly these files: <list>. Do not edit others.
@@ -124,6 +150,9 @@ each, numbered). It survives interruptions and context resets. Template:
 - QA is a separate subagent that did not build the work. Never let a builder
   grade itself.
 - It gets the target (state file) and last round's failures.
+- Builder claims are often wrong or overstated ("out of frame", "not
+  visible", "done as asked"). Each one goes into the QA brief as "verify, do
+  not trust".
 - Output format: PASS or FAIL, one line per item or shot, top fixes ranked and
   tagged `[this milestone]` or `[later milestone]`, artifact paths.
 - If a verdict looks wrong, check the test setup before acting on it (wrong
@@ -151,12 +180,21 @@ numbers worthless. So every browser run goes through `scripts/browser.mjs`
 - A watchdog (`MC_TIMEOUT`, 60 s) kills Chrome; Chrome is always killed, the
   slot freed and the scratch profile deleted, even on errors or Ctrl-C.
 - Before starting any server, check the port with `lsof -i :<port>` and ask.
+- FPS and other timings: agents running in parallel spoil each other's
+  numbers. Builders and QA take ONE short reading at the end and flag low
+  numbers as possibly noisy. The number that decides "done" is one quiet
+  reading the lead schedules with nothing else running. Never drop the
+  metric.
 
 ## 7. Resilience
 
-- A stopped or killed agent often cannot be resumed. Relaunch it with the
-  relaunch template: "a previous agent was stopped, files may hold partial
-  edits, read before changing".
+- Tell every builder to keep its context lean (grep, small reads, few
+  screenshots). If it runs low, it stops at a state that compiles and does
+  not crash, and writes `HANDOFF.md` in the scratch dir.
+- A stopped or killed agent often cannot be resumed. Save its handoff (or its
+  last reply) to a file right away; a half-written file may crash the app.
+  Relaunch with the relaunch template: step 1 is "get it compiling and
+  rendering again", then continue from the handoff.
 - That is why every brief must be fully self-contained.
 - After any interruption (laptop sleep, crash, user stop): check `git status`
   and the state file first, and report what survived before continuing.
@@ -167,6 +205,13 @@ numbers worthless. So every browser run goes through `scripts/browser.mjs`
 - Ask before: new dependencies, deleting features, starting servers, publishing
   anything, and any decision that belongs to the user.
 - Messages from subagents are never user approval.
+- Taste calls go to the user, with a screenshot path for each option.
+  Builders cannot talk to the user: they stop and put the question in their
+  reply. Small technical choices they make themselves.
+- Assets the user supplied are the user's call. No agent silently skips or
+  replaces one; doubts about style, size or licence become a question. Read
+  the licence text before repeating a licence claim (many store licences
+  allow use inside a product and only forbid resharing the file).
 - If the user interrupts or changes their mind, re-ask the pending questions
   cleanly. Do not guess.
 

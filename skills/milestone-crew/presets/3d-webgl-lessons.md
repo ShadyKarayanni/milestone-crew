@@ -60,6 +60,10 @@ the fix and a number where one was measured.
     Move to KTX2 (plus the KTX2 loader) only if GPU memory becomes the limit.
 12. Give each heavy asset a keep-or-cut rule in milestone 1, for example
     "stays only if it compresses to 1.2 MB or less, else a code-built stand-in".
+13. Store-bought and scanned models often ship with unlit materials, odd
+    units or a different up axis. Check the material type and scale before
+    use, and give them lit materials so they react to the scene's lights
+    and fog.
 
 ## 3. Materials and look
 
@@ -117,7 +121,13 @@ the fix and a number where one was measured.
 16. What read as cheap: hero objects that are low-poly with no bevels or
     profile, hard puddle edges, overlay rings, flat sky bands, a clipped-white
     moon and blue night. Research a real profile for hero objects before
-    modelling them.
+    modelling them. Simple primitives (smooth cylinders, bare boxes) read as
+    low-poly near the camera: use real asset parts, bevels and enough
+    segments, and drop props that can only be made low-poly.
+17. When you deform a shape (curve, bend, lift), everything attached to it
+    must follow: undersides, walls, trims, and particles or drips that run
+    along its edges. Check it from every camera, or gaps and floating parts
+    appear.
 
 ## 4. Lighting, shadows and post
 
@@ -157,6 +167,11 @@ the fix and a number where one was measured.
     environment at `environmentIntensity` about 0.22.
 12. With a post chain, turn off canvas MSAA (`antialias: false`, composer
     `multisampling={0}`) and add SMAA on the high tier only.
+
+13. A light inside solid matter (a stone lantern, a lamp housing): the solid
+    material must not glow. Use a small emissive core plus a point light
+    inside, and check other systems that add glow sprites or halos to every
+    light, so they skip this one or match it.
 
 ## 5. Atmosphere (fog, mist, rain, ripples)
 
@@ -269,6 +284,9 @@ the fix and a number where one was measured.
     30 Hz, not every frame, while the clock still accumulates every frame.
 14. Confirm a frame-rate problem in a production build before chasing it.
     One long chase turned out to be dev-build overhead.
+15. Spend detail only where a camera sees it. Before tiling or detailing a
+    whole surface, check which faces the approved cameras ever show. Full
+    coverage can cost millions of triangles for nothing.
 
 ## 8. QA and dev hooks
 
@@ -292,7 +310,9 @@ the fix and a number where one was measured.
    (`browser.mjs shot --wait 10000`).
 8. Test browsers share the GPU with the user's own browser. Take FPS with
    only one headless browser running, and treat headless FPS as relative, not
-   as the user's number.
+   as the user's number. Take a baseline before builders start (their edits
+   and hot reloads spoil later readings), and let one quiet reading, with
+   nothing else running, decide "done".
 9. Watch for context loss in every QA run:
    `browser.mjs console <url> --match "Context Lost"`.
 

@@ -18,13 +18,24 @@ You own exactly these files (create or edit only these):
 - <path>
 - <path>
 Shared files, minimal edits only:
-- <path>: <the exact small change, e.g. "add one mount line for X">
+- <path>: <the exact small change or region, e.g. "add one mount line for X">
 
 Rules:
 - Re-read each file right before editing it. Other agents work in parallel.
 - Never undo or tidy another agent's changes.
 - Do not add dependencies, start servers or delete features. If you need to,
   stop and say so in your reply.
+- Keep your context lean: grep, small reads, few screenshots. If you run
+  low, stop at a state that compiles and does not crash, write
+  <scratch dir>/HANDOFF.md (done, not done, next steps, files touched) and
+  say so in your reply.
+- Assets the user supplied: never skip or replace one. Doubts about style,
+  size or licence go in your reply as a question.
+- Taste calls: stop and ask in your reply, with a screenshot path per option.
+  Small technical choices: decide yourself.
+- Budgets and limits in PLAN.md are the user's. Do not change them.
+- FPS or timings: ONE short reading at the end. Call low numbers "possibly
+  noisy" (other agents share the machine).
 - Run <check/lint/test command> before you finish.
 - If you discover a trap others should know, append one numbered line to the
   Gotchas list in PLAN.md.
@@ -49,10 +60,13 @@ You did not build this. Your job is to find what is wrong, not to be kind.
 
 Read first: <repo>/PLAN.md (target, decisions, gotchas).
 Last round's failures to re-check: <list, or "first round">.
+Builder claims to verify, do not trust: <list, e.g. "X is out of frame">.
 
 "Done when" items to mark met / not met (from PLAN.md, milestone <N>):
 <Na>. <item: URL, command or shot + what must be true>
 <Nb>. ...
+Also check these spec points and report any that fail under EXTRAS:
+<spec points the user cares about that the items above do not cover>.
 
 How to verify: <from the preset: commands, viewports, tests>.
 Browser: use only the helper script, never hand-rolled Chrome commands:
@@ -63,6 +77,8 @@ Browser: use only the helper script, never hand-rolled Chrome commands:
   node $B console <url> [--match text]             (errors, matching lines)
 It allows 3 browsers at once machine-wide and waits for a free slot; that is
 normal, do not work around it. Never dump full logs.
+FPS: ONE short reading at the end; call a low number "possibly noisy". The
+lead's quiet reading decides.
 Save artifacts to <scratch dir>, never inside the repo.
 
 If something looks wrong, first rule out your own setup (viewport, scale,
@@ -71,6 +87,7 @@ stale build, wrong URL) before failing it.
 Reply in 150 words or fewer. No pasted code. Format:
 VERDICT: PASS (every item met) or FAIL
 - <Na>: met / NOT MET, problem in one line
+CLAIMS: true / false, one line each.  EXTRAS: <failed spec points or none>
 TOP FIXES (ranked):
 1. <fix> [this milestone | later milestone] (owner file: <path>)
 ARTIFACTS: <paths>
@@ -93,10 +110,17 @@ Reply in 200 words or fewer, no code: what you changed, what you could not fix.
 
 ## Relaunch after a stopped agent
 
+Save the stopped agent's handoff (or last reply) to a file first. For a
+fresh builder on a new round, use the builder brief plus a short "last round
+did / the user said" note.
+
 ```
-A previous agent was stopped mid-task. Files may hold partial edits.
-Read every file before changing it. Do not assume anything was finished.
-Run `git status` and `git diff --stat` first to see what exists.
+A previous agent was stopped mid-task. Files may hold partial edits, and the
+app may not compile or render.
+1. Run `git status` and `git diff --stat`. Read the handoff: <path or "none">.
+2. Get the app compiling and rendering again. Nothing else first.
+3. Continue from the handoff. Read every file before changing it. Do not
+   assume anything was finished.
 
 <then paste the full original brief, unchanged>
 ```

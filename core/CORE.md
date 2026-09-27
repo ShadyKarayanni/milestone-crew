@@ -19,7 +19,8 @@
 - Independent, harsh QA after every milestone: PASS/FAIL, one line per item,
   ranked fixes, artifact paths. Fix, then re-QA ONCE.
 - Route fixes to the builder that owns the files (resume it with SendMessage).
-- If a QA verdict looks off, check the test setup before trusting it.
+- If a QA verdict looks off, check the test setup before trusting it. Put
+  builder claims in the QA brief as "verify, do not trust".
 - The lead never drives a browser. Screenshots happen only inside QA subagents,
   via the plugin's `browser.mjs` (max 3 headless browsers at once).
 - Write every brief self-contained. A stopped agent often cannot be resumed:
@@ -36,7 +37,8 @@
   and list the open items. Only the user may park items for later ("Parked").
 - Once the user approves an output (a shot, a layout), a later QA or builder
   idea that would change it goes to the user as a question, not to a builder.
-- Commit after each milestone. Then STOP with a plain-language report: what
+- Commit after each accepted round (with the user's OK) and before relaunching
+  a builder on the same files. Then STOP with a plain-language report: what
   changed, what to look at, what was verified, what was not. Wait for the OK.
 
 ## Talking and asking
