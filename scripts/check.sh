@@ -33,6 +33,10 @@ for f in "$skill"/presets/*.md; do
   case "$name" in *_TEMPLATE.md) continue ;; esac
   echo "$presets" | grep -qx "$name" || bad "$name exists but is not in the SKILL.md index"
 done
+# The 3D lessons file exists and the 3d-webgl preset points to it
+if [ -f "$skill/presets/3d-webgl-lessons.md" ] && grep -q '3d-webgl-lessons\.md' "$skill/presets/3d-webgl.md"; then
+  ok "presets/3d-webgl-lessons.md exists and is linked from 3d-webgl.md"
+else bad "presets/3d-webgl-lessons.md missing or not linked from 3d-webgl.md"; fi
 for r in references/briefs.md references/state-file.md presets/_TEMPLATE.md; do
   [ -f "$skill/$r" ] && ok "$r exists" || bad "$r missing"
 done

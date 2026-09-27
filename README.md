@@ -105,6 +105,7 @@ skills/milestone-crew/
   presets/
     web-design.md        websites and redesigns
     3d-webgl.md          three.js / React Three Fiber scenes
+    3d-webgl-lessons.md  3D field guide, loaded before milestone 1
     backend-api.md       APIs and services
     _TEMPLATE.md         starting point for a new preset (Done when per milestone)
 scripts/check.sh         validates the plugin (run before every commit)

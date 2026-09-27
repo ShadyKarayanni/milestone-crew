@@ -30,7 +30,8 @@ source assets and check quality. Your context is the scarce resource: guard it.
 3. Run `git status`. If the user has uncommitted work, ask to commit it
    (leave `PLAN.md` out of that commit), then create a branch for this job.
    Never stash, reset or force.
-4. Load only the preset the brief names (see the index below).
+4. Load only the preset the brief names (see the index below). For 3D work,
+   also load `presets/3d-webgl-lessons.md` before milestone 1.
 5. The state file is `PLAN.md` at the repo root, from `references/state-file.md`
    (reuse an existing plan file if the repo has one).
 
@@ -45,6 +46,7 @@ matches, work from this playbook alone and offer to write a new preset from
 |---|---|---|
 | web-design | Website design, redesigns, landing pages, visual polish | `presets/web-design.md` |
 | 3d-webgl | three.js / React Three Fiber scenes, shaders, GPU budgets | `presets/3d-webgl.md` |
+| 3d-webgl-lessons | Field guide of paid-for 3D lessons. Loaded with 3d-webgl for all 3D work, before milestone 1 | `presets/3d-webgl-lessons.md` |
 | backend-api | APIs, services, data models, migrations | `presets/backend-api.md` |
 
 ## 1. The milestone loop
