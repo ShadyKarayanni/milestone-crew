@@ -98,15 +98,27 @@ each, numbered). It survives interruptions and context resets. Template:
 - If a verdict looks wrong, check the test setup before acting on it (wrong
   viewport, stale build, wrong URL, cached assets, wrong device scale).
 - The lead never drives a browser. Screenshots happen only in QA subagents,
-  headless browser CLI first; browser-automation tools only inside subagents,
-  as a fallback.
+  via `scripts/browser.mjs` (section 6); browser-automation tools only inside
+  subagents, as a fallback.
 
 ## 6. Shared machine resources
 
-GPU-heavy headless browsers compete with the user's own browser and apps.
-- One headless browser at a time, guarded by a lock file (e.g. `/tmp/<project>-browser.lock`).
-- Kill each browser right after use. Keep runs short.
-- Wrap runs in timeouts and a watchdog. Use a scratch profile directory.
+Headless browsers share the GPU with the user's own browser and apps. Too many
+at once makes everything stutter, the user's screen included, and makes FPS
+numbers worthless. So every browser run goes through `scripts/browser.mjs`
+(plain Node 18+, no dependencies):
+
+- `node browser.mjs shot <url> <out.png>`: desktop layout, 800x500 image,
+  after a real wait (default 6 s).
+- `node browser.mjs fps <url>`: collects `[fps] NN` console lines at DPR 2 and
+  prints min / median / max.
+- `node browser.mjs console <url> [--match text]`: only matching console lines
+  and page errors.
+- At most 3 browsers run at once across ALL agents on the machine (slots in
+  the system temp dir; `MC_MAX_BROWSERS` to change). A 4th call waits for a
+  free slot (up to `MC_SLOT_WAIT`, 180 s). Dead owners' slots are reclaimed.
+- A watchdog (`MC_TIMEOUT`, 60 s) kills Chrome; Chrome is always killed, the
+  slot freed and the scratch profile deleted, even on errors or Ctrl-C.
 - Before starting any server, check the port with `lsof -i :<port>` and ask.
 
 ## 7. Resilience

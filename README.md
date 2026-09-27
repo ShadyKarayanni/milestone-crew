@@ -71,6 +71,8 @@ skills/milestone-crew/
   references/
     briefs.md            builder, QA, fix-round and relaunch templates
     state-file.md        PLAN.md template
+  scripts/
+    browser.mjs          headless Chrome helper for QA (shot, fps, console)
   presets/
     web-design.md        websites and redesigns
     3d-webgl.md          three.js / React Three Fiber scenes
@@ -79,6 +81,25 @@ skills/milestone-crew/
 scripts/check.sh         validates the plugin (run before every commit)
 .github/workflows/       runs check.sh on push and PR
 ```
+
+## Headless browser helper
+
+QA agents take screenshots and FPS readings with
+`skills/milestone-crew/scripts/browser.mjs`: plain Node 18+, no npm packages,
+just a local Chrome.
+
+```
+node browser.mjs shot <url> <out.png>    # desktop layout, 800x500, real 6 s wait
+node browser.mjs fps "<url>?fps"         # [fps] console lines at DPR 2, min/med/max
+node browser.mjs console <url>           # page errors and matching console lines
+```
+
+Headless browsers share the GPU with your own browser, so at most 3 run at once
+across every agent on the machine; extra calls wait for a free slot. A watchdog
+kills Chrome after 60 s, and Chrome, its scratch profile and the slot are always
+cleaned up. Settings: `CHROME_PATH`, `MC_MAX_BROWSERS` (3), `MC_SLOT_WAIT`
+(180 s), `MC_TIMEOUT` (60 s). `fps` and `console` need Node 22+; on older Node,
+`shot` falls back to Chrome's own `--screenshot` (no extra wait).
 
 ## Add a preset in 3 steps
 

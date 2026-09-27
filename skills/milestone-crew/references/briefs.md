@@ -37,6 +37,12 @@ what you could not finish, anything you need from a file you do not own.
 
 ## QA brief
 
+The QA agent takes screenshots and FPS readings with the plugin's browser
+helper, `scripts/browser.mjs` (relative to this skill's directory). Give QA the
+absolute path. To find it, use `${CLAUDE_PLUGIN_ROOT}/skills/milestone-crew/scripts/browser.mjs`
+if that variable is set; otherwise search the plugins dir:
+`find ~/.claude/plugins -path '*milestone-crew/scripts/browser.mjs' | head -1`.
+
 ```
 You are an independent, HARSH QA reviewer for milestone <N>: <name>.
 You did not build this. Your job is to find what is wrong, not to be kind.
@@ -49,9 +55,15 @@ Check these items / shots:
 2. ...
 
 How to verify: <from the preset: commands, viewports, tests>.
-Resource rules: one headless browser at a time (lock file <path>), kill it
-right after use, timeouts on every run. Never dump full logs: grep them.
-Save artifacts to <scratch dir>. Keep screenshots small (800x500 or less).
+Browser: use only the helper script, never hand-rolled Chrome commands:
+  B=<absolute skill dir>/scripts/browser.mjs
+  node $B shot <url> <scratch dir>/<name>.png      (desktop layout, 800x500)
+  node $B shot <url> <file> --size 390x844 --scale 1   (mobile pass)
+  node $B fps <url with ?fps> [--seconds 10]       (DPR 2, min/med/max)
+  node $B console <url> [--match text]             (errors, matching lines)
+It allows 3 browsers at once machine-wide and waits for a free slot; that is
+normal, do not work around it. Never dump full logs.
+Save artifacts to <scratch dir>, never inside the repo.
 
 If something looks wrong, first rule out your own setup (viewport, scale,
 stale build, wrong URL) before failing it.

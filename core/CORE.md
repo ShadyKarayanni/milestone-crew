@@ -24,7 +24,8 @@
 - Write every brief self-contained. A stopped agent often cannot be resumed:
   relaunch it saying "a previous agent was stopped, files may hold partial
   edits, read before changing". Check `git status` after any interruption.
-- One heavy headless browser at a time (lock file), killed right after use.
+- Up to 3 headless browsers at once (the plugin's `browser.mjs` enforces it).
+  QA uses that script for screenshots and FPS, never hand-rolled Chrome runs.
 
 ## Milestones
 - Commit the user's uncommitted work first, then branch.

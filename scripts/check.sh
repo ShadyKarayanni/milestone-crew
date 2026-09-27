@@ -37,7 +37,14 @@ for r in references/briefs.md references/state-file.md presets/_TEMPLATE.md; do
   [ -f "$skill/$r" ] && ok "$r exists" || bad "$r missing"
 done
 
-# 4. Hook script runs and prints CORE.md
+# 4. Browser helper parses (node only; skipped if node is missing)
+b="$skill/scripts/browser.mjs"
+if [ ! -f "$b" ]; then bad "$b missing"
+elif ! command -v node >/dev/null 2>&1; then ok "$b exists (node missing, syntax not checked)"
+elif node --check "$b" 2>/dev/null; then ok "$b passes node --check"
+else bad "$b fails node --check"; fi
+
+# 5. Hook script runs and prints CORE.md
 out=$(CLAUDE_PLUGIN_ROOT="$(pwd)" sh hooks/session-start.sh); rc=$?
 if [ "$rc" -eq 0 ] && [ "$out" = "$(cat core/CORE.md)" ]; then ok "hook prints core/CORE.md"; else bad "hook failed (exit $rc) or output differs"; fi
 out=$(env -u CLAUDE_PLUGIN_ROOT sh hooks/session-start.sh)

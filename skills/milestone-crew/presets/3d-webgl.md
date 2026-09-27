@@ -6,7 +6,7 @@ when the scene lives inside a website.
 ## Milestone plan
 
 1. **Direction doc** (no code): mood, references, camera shot list with
-   look-at points, asset list with sources and licenses, MB budget, FPS targets.
+   look-at points, asset list with sources and licenses, MB and FPS targets (see Targets).
 2. **Blockout and camera path**: simple geometry, camera moving through every
    shot, automated path check.
 3. **Materials and lighting**: real assets, textures, shadows, fog.
@@ -18,18 +18,19 @@ when the scene lives inside a website.
 - `?at=N`: jump the camera to shot N, no tween.
 - `?fps`: log `[fps] NN` once a second.
 - `?off=pass1,pass2`: disable named passes/effects to measure each one's cost.
-- `?dpr=N`: force a device pixel ratio for testing.
 - A path-check script that samples the camera path and fails if the camera
   goes through geometry or a look-at target leaves the frame.
 
 ## How QA verifies
 
-- Screenshots per shot via `?at=N` (see `web-design.md` for the headless
-  command and rules).
+- Screenshots per shot via `?at=N` with `scripts/browser.mjs shot` (see
+  `web-design.md`).
 - **Measure FPS at DPR 2, not only DPR 1.** 60 FPS at DPR 1 once hid 30 to 38
-  at DPR 2. Use `?off=` to find which pass costs what.
-- Check for WebGL context loss in the logs (grep, do not dump).
-- One GPU-heavy browser at a time; the user's own browser slows down otherwise.
+  at DPR 2. `browser.mjs fps "<url>?fps"` runs at DPR 2 by default. Use
+  `?off=` to find which pass costs what.
+- Check for WebGL context loss: `browser.mjs console <url> --match "Context Lost"`.
+- At most 3 browsers at once (the script enforces it); they share the GPU
+  with the user's own browser.
 
 ## Gotchas
 
@@ -60,14 +61,17 @@ when the scene lives inside a website.
 
 ## Assets
 
-- Budget in MB, set in milestone 1, tracked in the state file.
+- MB budget set in milestone 1 (see Targets), tracked in the state file.
 - Prefer CC0 sources (e.g. the Poly Haven API). Record source and license.
 - Optimize with gltf-transform: WebP textures plus meshopt.
 - Build simple architecture (boxes, beams, poles, planes) in code instead of
   downloading models.
 - Asset sourcing is a subagent job; the lead only sees the summary.
 
-## Budgets (starting points)
+## Targets (example defaults: milestone 1 sets the real ones per project)
 
-- 60 FPS at DPR 1.5 on a mid laptop; no context loss at DPR 2.
-- Draw calls and total MB written in the state file and re-measured each milestone.
+- A MacBook-class laptop holds 60 FPS at DPR 2.
+- A mid-range phone holds 30 FPS or better.
+- 3D assets total 5 MB or less.
+- Text paints immediately, before the 3D scene is ready.
+- Write the chosen targets in the state file and re-measure each milestone.

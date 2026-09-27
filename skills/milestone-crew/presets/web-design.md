@@ -22,8 +22,28 @@ For website design and redesigns: landing pages, marketing sites, visual polish.
 
 ## How QA verifies
 
-Screenshots via headless Chrome CLI, inside the QA subagent only (macOS path
-shown; on Linux use `google-chrome` or `chromium`):
+Screenshots via the plugin's `scripts/browser.mjs`, inside the QA subagent
+only (see the QA brief in `references/briefs.md` for how to find it):
+
+```
+node browser.mjs shot "<url>?at=2" shot-2.png          # desktop, 800x500
+node browser.mjs shot "<url>?at=2" m-2.png --size 390x844 --scale 1
+node browser.mjs fps "<url>?fps"                       # fps min/med/max
+node browser.mjs console "<url>"                       # errors only
+```
+
+- Why the default 1600x1000 at scale 0.5: you get the DESKTOP layout in an
+  800x500 image. An 800px-wide window would trigger the mobile layout and give
+  false FAILs.
+- It waits real time (default 6 s after load), never `--virtual-time-budget`,
+  which skips animation and asset timing. Raise `--wait` for heavy pages.
+- Keep screenshots small (desktop 800x500; a 390x844 phone shot is fine), a
+  few per run.
+- Check the narrow (mobile) layout on purpose, as its own pass.
+- At most 3 browsers at once machine-wide; the script waits for a free slot.
+
+Fallback only, if the script cannot run (macOS path shown; on Linux use
+`google-chrome` or `chromium`). It shoots at load time, with no extra wait:
 
 ```
 "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome" \
@@ -31,17 +51,6 @@ shown; on Linux use `google-chrome` or `chromium`):
   --window-size=1600,1000 --force-device-scale-factor=0.5 \
   --user-data-dir=<scratch> --screenshot=<file> <url>
 ```
-
-- Why 1600x1000 at scale 0.5: you get the DESKTOP layout in an 800x500 image.
-  An 800px-wide window would trigger the mobile layout and give false FAILs.
-- Use real waiting (sleep / poll the page), never `--virtual-time-budget`,
-  which skips animation and asset timing.
-- Logs: add `--enable-logging=stderr --v=0` and grep for what you need
-  (e.g. `[fps]`, `Error`). Never dump the whole log.
-- Keep screenshots at 800x500 or less, a few per run.
-- Check the narrow (mobile) layout on purpose, as its own pass, with a narrow
-  window size.
-- One browser at a time via lock file; kill it after each run; timeouts.
 
 Also verify:
 - Reduced motion (`prefers-reduced-motion`) still gives a complete page.
