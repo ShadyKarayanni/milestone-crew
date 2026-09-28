@@ -128,6 +128,14 @@ the fix and a number where one was measured.
     must follow: undersides, walls, trims, and particles or drips that run
     along its edges. Check it from every camera, or gaps and floating parts
     appear.
+18. When a surface reads as the wrong material (stone that reads as wood,
+    metal that reads as plastic), check the light hitting it before
+    re-texturing. A strong warm light on a dark, down-facing stone face read
+    as a wooden plank, and a full surface-breakup pass barely changed it.
+    Find which light is responsible first (toggle lights with `?off=`).
+19. In a dark scene, fine detail (wood grain, a small metal pull, stains)
+    vanishes at viewing size. Judge it in a screenshot at the real size, not
+    only in an enlarged crop, and lift tone or contrast a little so it reads.
 
 ## 4. Lighting, shadows and post
 
@@ -333,3 +341,11 @@ the fix and a number where one was measured.
    all read it), so moving a lamp moves its light everywhere.
 6. When deleting a component, delete its check script and its `npm run check`
    entry in the same commit.
+7. If the framework has no option to build into another folder, build from a
+   copy: sync the repo (minus dependencies, build output, `.git` and big raw
+   assets) to a scratch folder, copy dependencies in with copy-on-write
+   (`cp -Rc` on macOS), and build there. Some bundlers (Turbopack) reject a
+   symlinked `node_modules` that points outside the project root.
+8. Before a fix round, make sure QA or an audit names the exact mesh and file
+   behind each problem in a screenshot ("the bar above the lantern" is not
+   enough). Builders lost whole fix rounds guessing which mesh a crop showed.
