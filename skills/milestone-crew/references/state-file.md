@@ -8,7 +8,7 @@ first. Sections 1 to 10 are the brief (full hints in the kickoff skill's
 ```markdown
 # <Project> plan
 
-Branch: <branch>   Preset: <web-design | 3d-webgl | backend-api | none>
+Branch: <branch>   Preset: <web-design | 3d-webgl | motion-graphics | backend-api | none>
 Brief: <draft, awaiting approval | approved YYYY-MM-DD>
 
 ## 1. Goal

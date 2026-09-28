@@ -57,6 +57,9 @@ builds. Reply in 200 words or fewer, no pasted code, as short bullets:
 
 4. Pick the matching preset from the playbook's index, if one fits. Its
    milestone plan is a set of **defaults to propose**, not a fixed plan.
+   Add its kickoff questions, if it lists any, to the interview. If it has a
+   lessons file (`3d-webgl-lessons.md`, `motion-graphics-lessons.md`), copy
+   the lessons that apply into the brief's "Gotchas already paid for".
 
 ## 2. Map or interview
 

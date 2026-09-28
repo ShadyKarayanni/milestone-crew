@@ -6,8 +6,8 @@ description: >
   harsh QA subagent judges each milestone against its "Done when" checklist,
   fixes go back to the owning builder, and work stops after every milestone
   for the user's OK. Starts with a kickoff (Step 0). Includes brief
-  templates, a state-file template and presets (web design, 3D/WebGL, backend
-  API). Use when a task spans several files or areas, when the user says
+  templates, a state-file template and presets (web design, 3D/WebGL, motion
+  graphics / video, backend API). Use when a task spans several files or areas, when the user says
   "crew mode", "milestone crew", "use builders and QA", or when starting a
   redesign, a big feature or a multi-step build.
 license: MIT
@@ -31,7 +31,9 @@ source assets and check quality. Your context is the scarce resource: guard it.
    (leave `PLAN.md` out of that commit), then create a branch for this job.
    Never stash, reset or force.
 4. Load only the preset the brief names (see the index below). For 3D work,
-   also load `presets/3d-webgl-lessons.md` before milestone 1.
+   also load `presets/3d-webgl-lessons.md` before milestone 1. For motion
+   graphics, load `presets/motion-graphics-lessons.md` with the
+   motion-graphics preset before milestone 1.
 5. The state file is `PLAN.md` at the repo root, from `references/state-file.md`
    (reuse an existing plan file if the repo has one).
 
@@ -47,6 +49,8 @@ matches, work from this playbook alone and offer to write a new preset from
 | web-design | Website design, redesigns, landing pages, visual polish | `presets/web-design.md` |
 | 3d-webgl | three.js / React Three Fiber scenes, shaders, GPU budgets | `presets/3d-webgl.md` |
 | 3d-webgl-lessons | Field guide of paid-for 3D lessons. Loaded with 3d-webgl for all 3D work, before milestone 1 | `presets/3d-webgl-lessons.md` |
+| motion-graphics | Programmatic video and motion graphics (Remotion first, any frame-driven tool) | `presets/motion-graphics.md` |
+| motion-graphics-lessons | Field guide of paid-for video lessons. Loaded with motion-graphics, before milestone 1 | `presets/motion-graphics-lessons.md` |
 | backend-api | APIs, services, data models, migrations | `presets/backend-api.md` |
 
 ## 1. The milestone loop

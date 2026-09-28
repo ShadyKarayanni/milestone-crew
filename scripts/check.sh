@@ -37,6 +37,9 @@ done
 if [ -f "$skill/presets/3d-webgl-lessons.md" ] && grep -q '3d-webgl-lessons\.md' "$skill/presets/3d-webgl.md"; then
   ok "presets/3d-webgl-lessons.md exists and is linked from 3d-webgl.md"
 else bad "presets/3d-webgl-lessons.md missing or not linked from 3d-webgl.md"; fi
+if [ -f "$skill/presets/motion-graphics-lessons.md" ] && grep -q 'motion-graphics-lessons\.md' "$skill/presets/motion-graphics.md"; then
+  ok "presets/motion-graphics-lessons.md exists and is linked from motion-graphics.md"
+else bad "presets/motion-graphics-lessons.md missing or not linked from motion-graphics.md"; fi
 for r in references/briefs.md references/state-file.md presets/_TEMPLATE.md; do
   [ -f "$skill/$r" ] && ok "$r exists" || bad "$r missing"
 done
