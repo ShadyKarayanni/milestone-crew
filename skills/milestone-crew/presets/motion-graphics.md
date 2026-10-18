@@ -9,7 +9,8 @@ ffmpeg).
 
 `motion-graphics-lessons.md` holds the paid-for gotchas (setup and licensing,
 skills, storyboard, timeline and code, look, QA, rendering, sound, working
-with the user, agent ops). Load it with this preset, before milestone 0 if
+with the user, agent ops, UI demo videos, a series of feature videos). Load
+it with this preset, before milestone 0 if
 you run one, and always before milestone 1. Copy the lessons that apply into
 the brief's "Gotchas already paid for". New lessons go there, not here.
 
@@ -34,6 +35,28 @@ Ask these on top of the usual rounds. Skip any the user already answered.
 - **Previews**: stills and short clips as they are made, or only at milestone
   ends? Is the user watching remotely?
 - **Machine**: may renders use every CPU core, or cap `--concurrency`?
+
+## UI demo videos
+
+For a video that shows a web app being used (cursor, captions, typing).
+Read sections 11 and 12 of `motion-graphics-lessons.md`, and put these in
+the brief:
+
+- **Look-alike UI**: hand-built in the video project, labels verbatim from
+  the app's source code, no screenshots. Every step's behaviour checked in
+  the app's code before it is storyboarded. Obviously fake data.
+- **Camera**: one continuous camera with named presets, no cuts.
+- **Captions**: enter only after the camera has settled into the caption
+  framing; the camera leaves only after the caption is gone. Side panel or
+  one-line headline, max 2 lines.
+- **Cursor → click → type**: cursor arrives, settles 8–15 f (60 fps),
+  clicks with sound, pauses 6–12 f, then the first key. Gaps vary a little
+  per shot and are computed from the cursor's actual arrival frame. Aim
+  from layout constants, park clear of text being typed or read.
+- **Sound**: real recorded clicks and typing plus one light song; the user
+  picks each from 3–5 options.
+- **Done when** (milestone 3): QA has stepped through every typing shot
+  frame by frame and found the order and gaps above.
 
 ## Default milestone plan
 

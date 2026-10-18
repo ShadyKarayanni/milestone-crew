@@ -1,8 +1,10 @@
 # Motion graphics lessons (field guide)
 
-Hard-won lessons from a 30 s product showreel built in Remotion 4.0.481 by a
-lead, parallel builders and QA subagents. Most apply to any frame-driven
-video tool.
+Hard-won lessons from a 30 s product showreel and a 70 s, 4K, 60 fps UI demo
+video (a look-alike of a web app, cursor, captions, real click and typing
+sounds), both built in Remotion 4.0.481 by a lead, parallel builders and QA
+subagents. Most apply to any frame-driven video tool. Sections 11 and 12 are
+for UI demo videos and for a series of them.
 
 Load this with `motion-graphics.md` before milestone 1 (before milestone 0
 if you install skills). Copy the lessons that apply into the brief's
@@ -90,6 +92,13 @@ if you install skills). Copy the lessons that apply into the brief's
 11. Fade in from black: a full-frame overlay in the root composition,
     opacity 1→0 over ~9 frames, keeping length and grid. The frame-0 sound
     must swell in with it.
+12. A spring only reaches 1 a few frames after it starts (a 15 f slam at
+    ~4.5 f, an 8 f pop at ~4 f), so impacts land late. Start it that many
+    frames before the hit frame.
+13. A frame-driven background inside a `<Sequence>` restarts at every cut,
+    so it jumps. Drive continuous layers from the absolute frame.
+14. `@remotion/google-fonts` downloads the font files at render time.
+    Renders need network access.
 
 ## 5. Look and technique choice
 
@@ -167,6 +176,16 @@ if you install skills). Copy the lessons that apply into the brief's
    cuts as they're made, even before QA.
 4. Builders follow stale storyboard wording. Record every user pick in
    Decisions and supersede old ones explicitly ("goo" → "glide").
+5. Jargon questions ("Soft or Crisp cursor variant? Dialog overlay?")
+   confused the user. Pick small visual craft calls yourself and say what
+   they'll see in one plain line. Sounds are the opposite: never pick a
+   click, key set or song; give 3–5 audible options.
+6. A re-QA still running after the user watched and approved the fix reads
+   as ceremony. Say in one line what it still guards, offer to stop it and
+   commit, and log "re-QA waived by user".
+7. Short batch jobs (a set of GIFs, ~1 h) annoyed the user with milestone
+   stops and routine asks. Ask at kickoff whether to stop per milestone;
+   if not, cap QA at one round and send results straight to them.
 
 ## 10. Agent ops
 
@@ -180,3 +199,117 @@ if you install skills). Copy the lessons that apply into the brief's
 4. Several `gh` accounts may be logged in, and the active one may lack org
    access. Check `gh auth status`; push with a one-off credential helper for
    the right account instead of switching the global one.
+5. macOS has no `timeout` command, so "a timeout on every call" silently
+   fails. Use `perl -e 'alarm shift; exec @ARGV' 600 <cmd>`, or run it in
+   the background and kill it after N seconds. Kill hung renders (0% CPU).
+6. `node_modules` can be silently incomplete: a package in `package.json`
+   not installed, and the first render fails mid-milestone. Check it
+   before the first render (`npm ls --depth=0`); fix with `npm ci` only
+   after the user's OK.
+7. A `git rebase main` rewrote a video branch's history (and pulled in an
+   app change). Never rebase or force-push without asking.
+
+## 11. UI demo / explainer videos
+
+Look-alike and storyboard
+
+1. Screenshots go soft at 4K and can't animate. Hand-build a look-alike of
+   the app in the video project, with every label copied verbatim from the
+   app's source code (or labelled "shortened"). No screenshots.
+2. Animating how you think the app works gets it wrong: 5 of 30 gotchas
+   were app facts (what hide does, what search keeps, popover vs dialog).
+   Read the app's code for every step before it goes in the storyboard.
+3. Fake data must look obviously fake (John Doe v. ACME General Hospital,
+   Dr. Jane Roe, `ACME_ER_Records.pdf`). No real names or data.
+4. A state set in a close-up must show wherever the real app shows it (a
+   highlight added in the editor also shows in the table cell later).
+5. 4K: design at 1920×1080 and render with `--scale=2`; drafts at scale 1.
+   Use only vector or 2×+ raster assets, or they go soft.
+
+Camera and captions
+
+6. Cuts break the "watch me use it" feel. Use one continuous camera,
+   `screen = A + Z·(p − F)`, with named presets (full view, caption side,
+   caption top, close-ups at Z 1.3–1.7); moves of 48–70 f, no idle drift.
+7. Keep one app card mounted the whole video, fed by `appState(frame)` per
+   scene. Builder handoffs are state contracts: rows, view, camera preset,
+   cursor spot.
+8. A caption that enters while the camera still moves gets slid over by
+   the card. Bring it in after ≥ 60% of the move's frames (≥ 85% from a
+   close-up); leave the caption framing only after its fade-out ends.
+9. Captions sit in a side panel beside the zoomed-out card (Z ~0.84), or
+   as a one-line headline above when the side panel shrinks the UI too far.
+
+Cursor and tilt
+
+10. Cursor waypoints live in app space, so the cursor sticks to the UI
+    while the camera moves, and it keeps one screen size (~28 px) at every
+    zoom. Paths curve one way; duration = clamp(distance ÷ 900 px/s,
+    24 f, 60 f), eased fast start, long settle.
+11. Storyboard pixel numbers missed: the real dialog had a 2-line
+    description and a new table grid moved every target. Aim the cursor
+    from the layout constants the look-alike itself is drawn from.
+12. Tilt driven by the tilted cursor feeds back on itself. Use the
+    UNTILTED cursor position averaged over the previous 24 f; caps 3.5°
+    side to side, 2.3° up-down, perspective 2000 px; hold it while hidden.
+13. A cursor parked on text being typed or read hides it (even the input's
+    clear ✕). In close-ups, park it below and to the right of the text.
+14. `backdrop-filter` (4.5) fails on every dialog and popover inside the
+    tilted card. On a white theme, a flat ~20% grey veil read better than
+    the app's 80% black.
+
+Typing
+
+15. Typing sometimes started before the mouse finished moving. Order:
+    cursor arrives → settles 8–15 f (60 fps) → click with sound → 6–12 f
+    pause → first key. Vary the gaps slightly per shot and compute them
+    from the cursor's actual arrival frame, not the storyboard's.
+16. QA steps through every typing shot frame by frame: arrival, click and
+    first key in that order, with those gaps.
+17. The user found 11–14.5 chars/s too fast and ~7 too slow. ~10 chars/s
+    with a seeded human rhythm worked: gaps 3–14 f at 60 fps, mostly 4–8,
+    8–9 after spaces, one longer pause before a key word.
+
+Sound
+
+18. A 30-sound synthesized palette (pops, whooshes, ticks) approved on a
+    quick listen was rejected in the video. What worked: only real
+    recorded mouse clicks and keyboard typing plus one light song. Propose
+    that from the start; 8.2 is for promos.
+19. A palette approved on its own proves nothing. Play sounds in a short
+    clip of the actual video before placing them everywhere.
+20. Clicks: one identical short sample every time (user's pick, ~50 ms,
+    180 Hz low-cut). Keys: ~19 single presses cut from recordings, never
+    one of the last 6, rate 0.97/1/1.03, ±2 dB; fuller presses for space.
+21. Cut each recorded hit 0.5 ms before the first sample above 10% of its
+    peak (~70 ms per key), so the onset lands on its frame.
+22. Clicks and keys came out too loud over the song; the user had them
+    lowered 5 dB. Final: click peaks ~4 dB over song peaks, ~−19.5 LUFS.
+23. Free-music licences limit use (Mixkit's covers web, social and online
+    ads, not TV, radio, DVDs or games). Log each file and check the use.
+24. One shared theme file (frames, layout, cues) means sound reads its
+    frames at render time, so retimes need no sound edits.
+
+Shared files
+
+25. A builder rewrote the whole shared theme file and wiped another
+    builder's block. Append-only means targeted edits inside your own
+    marked block, never a full-file write.
+
+## 12. A series of feature videos
+
+1. Branch switching between videos breaks parallel work. Give each
+   feature video its own git worktree off the base video branch
+   (`git worktree add ../<repo>-demo-<feature> -b demo-<feature> <base>`).
+2. Each video lives in its own `src/demo-<feature>/` folder. The base
+   video's shared files are read-only: copy one into your folder to fork
+   it. `Root.tsx` gets one `<Composition>` line per video.
+3. Worktrees have no `node_modules` (gitignored). Symlink each one to the
+   base checkout's `node_modules`: one install, same pinned versions.
+4. Parallel full renders choke the machine. Use a machine-wide lock: `mkdir
+   /tmp/<project>-render.lock` (atomic) before a full render, `rmdir` in a
+   `trap ... EXIT`. One full render at a time, `--concurrency=50%` on 10
+   cores.
+5. Run one master agent per feature video, each following the crew
+   playbook with its own `PLAN.md` in its worktree and the base video's
+   lessons copied into its gotchas.
