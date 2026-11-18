@@ -16,6 +16,10 @@ the project, adds a "Done when" checklist to each, and the user approves.
 4. **Atmosphere and effects**: particles, post-processing, reflections.
 5. **Performance and quality tiers**: measure, cut, tier, polish.
 
+Split each milestone into 2 or more builders by file (e.g. per scene part or
+shot, one owner for the scene root), as the playbook says. Asset sourcing
+needs only the M1 asset list, so it runs parallel with M2.
+
 ## Lessons: read before milestone 1
 
 `3d-webgl-lessons.md` holds the paid-for gotchas and recipes (framework,

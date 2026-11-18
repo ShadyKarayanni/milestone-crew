@@ -110,12 +110,51 @@ trailer or a branch naming rule).
 - Remind yourself of the completion rule, and write it into the brief: a
   milestone is done only when every "Done when" item is met AND QA passed.
 
+### Plan for parallel work (the default)
+
+Plans come out serial unless you push against it. Do these four things for
+every plan:
+
+1. **Fix the interfaces first.** List every function signature, API contract
+   (routes, request and response shapes, status codes) and shared type that
+   more than one builder or milestone will use. Write each one out exactly in
+   the brief's "Interfaces" list. If one cannot be fixed yet, name the agent
+   and milestone that fixes it, as that agent's first task.
+2. **Write the dependency map.** For each milestone, list what it really
+   needs from earlier milestones: a file, a function signature, a contract.
+   Never just "the previous milestone". A milestone that needs only fixed
+   interfaces is marked "can start in parallel with M<x>". Check it like
+   this: "if M<x> were not built yet, what exactly would this milestone be
+   missing?" If the answer is "nothing", it is parallel.
+3. **Split every milestone into 2 or more builders, by file.** One builder is
+   allowed only with a one-line reason in the plan ("all changes are in one
+   file"). Two builders never create the same new file. A shared module gets
+   one file per builder, or exact shared text in the brief (e.g. an error
+   class) that builders copy word for word, plus a named merger.
+4. **Split by dependency inside a milestone.** The part that can start now
+   and the part that waits for another milestone's output are separate. The
+   waiting part is a short follow-up for the same builder, with the exact
+   item it waits for.
+
+Example of the mistake to avoid: "M3: backend tools + chat contract, needs
+M2". If only 5 of its 10 tools use M2's helpers, M3 has a builder for the
+chat route and the 5 screen tools that starts in parallel with M2, and a
+follow-up for the other 5 tools that waits for M2's helper file. A frontend
+milestone whose API contract is already fixed starts in parallel with the
+backend.
+
+Once the map is drafted, **ask the user once** how many agents may run at
+once (builders, QA prep, QA and explorers all count). Offer the plan's widest
+point and one or two smaller numbers, recommended first. Record the answer
+in the brief's section 2. The lead follows it and never asks again.
+
 ## 4. Write the brief
 
 Write `PLAN.md` at the repo root from the state-file template: the 10 brief
-sections, then the milestone table and one block per milestone with its
-"Done when" checklist. Set `Brief: draft, awaiting approval`. Keep it tight:
-every agent reads it.
+sections, then the interfaces, the dependency map, the milestone table (with
+Builders, Depends on and Parallel with) and one block per milestone with its
+builders and "Done when" checklist. Set `Brief: draft, awaiting approval`.
+Keep it tight: every agent reads it.
 
 ## 5. Summary and approval
 
@@ -123,6 +162,7 @@ Show the user a short plain-language summary (about 150 words):
 - the goal in one line
 - the must-keeps and the main constraints
 - the milestones, one line each
+- what runs in parallel, and the max agents at once
 - anything that needs their yes (new dependencies, deletions, servers)
 - open questions, if any
 

@@ -19,6 +19,11 @@ something a QA agent can check and mark met or not met.
 5. **<polish / performance / cleanup>**: <scope>.
    Done when: <budgets met, checks pass, final QA passes>.
 
+For each milestone, also give the default builders (2 or more, split by
+file, or one with a reason), what it really needs from earlier milestones,
+and which milestones it can run parallel with. Milestone 1 should fix the
+interfaces that make that parallel work possible.
+
 ## How QA verifies
 
 - <Commands, tests, screenshots, viewports. What counts as PASS.>

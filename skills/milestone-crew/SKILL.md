@@ -65,18 +65,35 @@ For every milestone:
      nobody can see it.
    - If the milestone touches a number (FPS, load time, size), measure a
      baseline now. Once builders edit and hot-reload, a clean baseline is gone.
-2. **Split**: divide the work along FILE boundaries, not topics. Each builder
-   gets a list of files it owns. Shared files (a router, an index, a scene
-   root) get one named builder, or minimal edits only (e.g. one mount line).
-   If two builders must touch one file, give each an exact region (a function,
-   a block) plus the re-read-before-edit rule.
-3. **Build**: launch builders in parallel with `references/briefs.md` (builder
-   template). Every brief is self-contained. Prefer a fresh builder per round
-   or big change: long, taste-driven rounds fill a builder's context.
+2. **Split**: use the milestone's Builders list from the plan. The default
+   is 2 or more builders, split along FILE boundaries, not topics. One
+   builder only if the plan gives a one-line reason. Each builder gets a
+   list of files it owns. Two builders never create the same new file.
+   - Split by dependency too: the part that can start now, and the part that
+     waits for another milestone's output. The waiting part is a short
+     follow-up for the same builder, sent when that exact output lands.
+   - Builders code against the plan's Interfaces, never against another
+     builder's unfinished code. An interface that is not fixed yet is fixed
+     first, by the agent the plan names.
+   - Shared files (a router, an index, a scene root) get one named builder,
+     or minimal edits only (e.g. one mount line). If two builders must touch
+     one file, give each an exact region (a function, a block) plus the
+     re-read-before-edit rule.
+3. **Build**: launch every "starts now" builder in ONE message, in parallel,
+   with `references/briefs.md` (builder template), up to the max agents in
+   PLAN.md section 2. Queue the rest in plan order, without asking. In the
+   same message, launch the QA prep agent (QA prep template) when the
+   milestone changes existing behaviour. Each brief names the other builders
+   running and their files. Every brief is self-contained. Prefer a fresh
+   builder per round or big change: long, taste-driven rounds fill a
+   builder's context. Builders in separate clones follow the merge rules in
+   `references/briefs.md`.
 4. **QA**: launch one fresh, independent QA subagent (QA template). Give it the
    state file, the milestone's "Done when" items, the failures from the
-   last round and every builder claim to verify (section 5). It marks each
-   item met or not met. It must be harsh.
+   last round, every builder claim to verify (section 5) and the QA prep
+   checklist of original behaviour. With separate clones, it gets the
+   combined patch and applies it in its own fresh clone. It marks each item
+   met or not met. It must be harsh.
 5. **Calibrate**: optionally glance at 1 or 2 QA screenshots yourself. Cheap,
    and it keeps your fix briefs honest.
 6. **Fix**: route each fix to the builder that owns the file. Small fixes:
@@ -87,6 +104,8 @@ For every milestone:
 8. **Commit** (with the user's OK) at the end of every accepted round, and
    always before relaunching a builder on files with uncommitted work: a later
    builder that rewrites a file can wipe it. Never stash, reset or checkout.
+   Stage the milestone's own files by path (`git add <paths>`), never
+   `git add -A`, so a parallel milestone's work stays out of the commit.
    Update the milestone table in the state file (Done when count, QA result,
    status, commit).
 9. **STOP and report** in plain language:
@@ -107,6 +126,21 @@ For every milestone:
 - Otherwise report it as **not done** and list exactly which items are open.
 - Only the user can move open items to a later milestone, and only by saying
   so. Record each under "Parked" in the state file, with its target milestone.
+
+### Parallel milestones
+
+"Stop after every milestone" stays the rule for approval and commits. But:
+
+- A milestone marked "Parallel with M<x>" in the approved plan may start its
+  builders while M<x> is still building or in QA. The approved plan is the
+  yes; do not ask again. The max agents in PLAN.md still applies.
+- Its QA may run early too, as long as its files are its own (or it is in a
+  separate clone).
+- Commits land in milestone order: M<x> first, after the user's OK, then the
+  next. Each stop report also says, in one line, what the parallel milestones
+  have done so far.
+- If a builder needs to change an interface that a parallel milestone relies
+  on, stop and ask the user. Do not let either side change it alone.
 
 ### Approved outputs stay approved
 
@@ -223,6 +257,7 @@ numbers worthless. So every browser run goes through `scripts/browser.mjs`
 
 - The `kickoff` skill (`/milestone-crew:kickoff`) and its
   `references/brief-template.md`: Step 0, the 10-section brief.
-- `references/briefs.md`: builder, QA, fix round and relaunch templates.
+- `references/briefs.md`: builder, QA prep, QA, fix round and relaunch
+  templates, and merge rules for builders in separate clones.
 - `references/state-file.md`: the state-file template (brief + milestones).
 - `presets/*.md`: see the index above.
