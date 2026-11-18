@@ -9,13 +9,27 @@ the project, adds a "Done when" checklist to each, and the user approves.
 
 1. **Direction doc** (no code): mood, references, type, color, layout per
    section, motion ideas, what "cheap" would look like and how to avoid it.
-   Written into the state file.
+   Written into the state file. It fixes the interfaces: the file for each
+   section, the design tokens (CSS variable names and values for color, type
+   scale, spacing) and the props of shared components.
+   Builders: one, because it is one document.
 2. **Blockout / layout**: real structure and sections, placeholder visuals,
    correct responsive breakpoints.
+   Builders: one per section file (or group of sections); one owner for the
+   layout shell, nav and tokens file.
 3. **Visual pass**: imagery, color, texture, depth. Kill every cheap tell.
+   Builders: one per section file, plus an asset sourcer. Asset sourcing
+   needs only the M1 direction, so it runs parallel with M2.
 4. **Motion and type**: scroll and entrance motion, type scale and rhythm,
    reduced-motion fallback.
+   Builders: motion per section, and one type owner (the tokens file). If
+   motion lives in its own files (e.g. `motion/<section>.ts`), it can run
+   parallel with M3.
 5. **Performance and polish**: load budget, first-load JS, copy lint, final QA.
+   Builders: performance (bundle, images, fonts) and copy lint, in parallel.
+
+QA prep (while builders build): from the base branch, list the current
+sections, copy, links and breakpoints that must survive the redesign.
 
 ## Dev hooks to add (dev-only, stripped or ignored in production)
 
